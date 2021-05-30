@@ -249,13 +249,13 @@ namespace LifeSim.UI.Boards
 
             WorldCanvas.Children.Clear();
 
-            LeftEdge.Content = LeftRenderEdge.ToString();
-            TopEdge.Content = TopRenderEdge.ToString();
-            RightEdge.Content = RightRenderEdge.ToString();
-            BottomEdge.Content = BottomRenderEdge.ToString();
-            Offsets.Content = $"XOffset: {XOffset.ToString().PadRight(6)} YOffset: {YOffset}";
-            CellCount.Content = $"Total Cells: {cellCollection.Cells.Count()} Living Cells: {cellCollection.Cells.Where((c) => c.IsAlive).Count()}";
-            Iteration.Content = $"Iteration: {cellCollection?.Iteration}";
+            LeftEdge.Content = LeftRenderEdge.ToString("N0");
+            TopEdge.Content = TopRenderEdge.ToString("N0");
+            RightEdge.Content = RightRenderEdge.ToString("N0");
+            BottomEdge.Content = BottomRenderEdge.ToString("N0");
+            Offsets.Content = $"XOffset: {XOffset:N0} YOffset: {YOffset:N0}";
+            CellCount.Content = $"Total Cells: {cellCollection.Cells.Count():N0} Living Cells: {cellCollection.Cells.Where((c) => c.IsAlive).Count():N0}";
+            Iteration.Content = $"Iteration: {cellCollection?.Iteration:N0}";
 
             if (cellCollection == null)
                 return;

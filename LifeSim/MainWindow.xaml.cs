@@ -27,7 +27,7 @@ namespace LifeSim
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            Title = $"LifeSim | Board Width:{Board.WorldWidth.ToString().PadRight(6)} Board Height:{Board.WorldHeight}";
+            Title = $"LifeSim | Board Width:{Board.WorldWidth:N0} Board Height:{Board.WorldHeight:N0}";
         }
     }
 }
