@@ -5,12 +5,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace LifeSim.Engine2D.Models
 {
-    public class CellCollection : List<Cell>
+    public class CellCollection : List<TrackedCell>
     {
         private object cellSync = new object();
+
+        public string Export()
+        {
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
+        }
+
+        public void Import(string cellJson)
+        {
+            ClearCells();
+            var cells = JsonConvert.DeserializeObject<IEnumerable<Cell>>(cellJson);
+            foreach (Cell cell in cells)
+            {
+                UpdateCell(cell.X, cell.Y, cell.IsAlive);
+            }
+        }
 
         public void ClearCells()
         {
@@ -27,16 +43,16 @@ namespace LifeSim.Engine2D.Models
                 lock (cellSync)
                 {
                     var allCells = this.ToList();
-                    foreach (Cell cell in allCells)
+                    foreach (TrackedCell cell in allCells)
                     {
                         cell.DetermineNextLiveState();
                     }
-                    foreach (Cell cell in allCells)
+                    foreach (TrackedCell cell in allCells)
                     {
                         cell.Advance();
                     }
-                    List<Cell> untrackedCells = new List<Cell>();
-                    foreach (Cell cell in allCells)
+                    List<TrackedCell> untrackedCells = new List<TrackedCell>();
+                    foreach (TrackedCell cell in allCells)
                     {
                         if (!cell.IsAlive && !cell.AnyLivingNeighbors)
                         {
@@ -45,9 +61,9 @@ namespace LifeSim.Engine2D.Models
                     }
                     if (untrackedCells.Any())
                     {
-                        foreach (Cell cell in untrackedCells)
+                        foreach (TrackedCell cell in untrackedCells)
                         {
-                            foreach (Cell neighbor in cell.Neighbors)
+                            foreach (TrackedCell neighbor in cell.Neighbors)
                             {
                                 if (neighbor.Neighbors.Contains(cell))
                                     neighbor.Neighbors.Remove(cell);
@@ -75,7 +91,7 @@ namespace LifeSim.Engine2D.Models
 
         }
 
-        public void AddExisting(List<Cell> existing, long x, long y)
+        public void AddExisting(List<TrackedCell> existing, long x, long y)
         {
             var res = this.Where((c) => c.X == x && c.Y == y);
             if (res.Any())
@@ -113,9 +129,9 @@ namespace LifeSim.Engine2D.Models
             }
         }
 
-        public Cell GetOrAddCell(long x, long y, bool newIsAlive, bool updateExisting = false)
+        public TrackedCell GetOrAddCell(long x, long y, bool newIsAlive, bool updateExisting = false)
         {
-            List<Cell> existing = new List<Cell>();
+            List<TrackedCell> existing = new List<TrackedCell>();
 
             //Row 1
             AddExisting(existing, x - 1, y - 1);
@@ -143,7 +159,7 @@ namespace LifeSim.Engine2D.Models
                 }
                 return c;
             }
-            var newCell = new Cell(this, x, y, newIsAlive);
+            var newCell = new TrackedCell(this, x, y, newIsAlive);
             if (existing.Any())
             {
                 foreach (var n in existing)
@@ -158,13 +174,13 @@ namespace LifeSim.Engine2D.Models
             return newCell;
         }
 
-        private void AddNeighbor(List<Cell> currentNeighbors, long x, long y)
+        private void AddNeighbor(List<TrackedCell> currentNeighbors, long x, long y)
         {
             if (!currentNeighbors.Any((c) => c.X == x && c.Y == y))
                 GetOrAddCell(x, y, false);
         }
 
-        public void GetNewNeighbors(List<Cell> currentNeighbors, long x, long y)
+        public void GetNewNeighbors(List<TrackedCell> currentNeighbors, long x, long y)
         {
             //Row 1
             AddNeighbor(currentNeighbors, x - 1, y - 1);

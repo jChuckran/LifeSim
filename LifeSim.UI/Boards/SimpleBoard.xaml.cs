@@ -6,7 +6,9 @@ using System.Windows.Shapes;
 using System.Linq;
 using LifeSim.Engine2D.Models;
 using System;
+using System.IO;
 using System.Windows.Input;
+using Microsoft.Win32;
 
 namespace LifeSim.UI.Boards
 {
@@ -235,6 +237,13 @@ namespace LifeSim.UI.Boards
             }
         }
 
+        public void Refresh()
+        {
+            var start = DateTime.Now;
+            RenderWorld();
+            FrameRenderTime.Content = $"{(int)DateTime.Now.Subtract(start).TotalMilliseconds}ms";
+        }
+
         private void RenderWorld()
         {
 
@@ -253,7 +262,7 @@ namespace LifeSim.UI.Boards
 
             var viewableCells = Cells.Where((c) => (c.X >= LeftRenderEdge / CellSize && c.X <= RightRenderEdge / CellSize) && (c.Y >= TopRenderEdge / CellSize && c.Y <= BottomRenderEdge / CellSize)).ToList();
 
-            foreach (Cell cell in viewableCells)
+            foreach (TrackedCell cell in viewableCells)
             {
                 if (cell.IsAlive)
                     AddPoint(CellSize, CellSize, (cell.X * CellSize) + CenterX + XOffset, (cell.Y * CellSize) + CenterY + YOffset, Colors.RoyalBlue);
@@ -287,6 +296,31 @@ namespace LifeSim.UI.Boards
             Cells.ToggleCell((long)cellPoint.X, (long)cellPoint.Y);
             RenderWorld();
             FrameRenderTime.Content = $"{(int)DateTime.Now.Subtract(start).TotalMilliseconds}ms";
+        }
+        
+        private void Save()
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog() { Filter = "LifeSim files (*.lifesim)|*.lifesim" };
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                Mouse.OverrideCursor = Cursors.Wait;
+                var cellJson = Cells.Export();
+                File.WriteAllText(saveFileDialog.FileName, cellJson);
+                Mouse.OverrideCursor = null;
+            }
+        }
+
+        private void Load()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+            {
+                Mouse.OverrideCursor = Cursors.Wait;
+                var cellJson = File.ReadAllText(openFileDialog.FileName);
+                Cells.Import(cellJson);
+                Refresh();
+                Mouse.OverrideCursor = null;
+            }
         }
 
         private void Generate_Click(object sender, RoutedEventArgs e)
@@ -378,6 +412,16 @@ namespace LifeSim.UI.Boards
             Cells.ClearCells();
             RenderWorld();
             FrameRenderTime.Content = $"{(int)DateTime.Now.Subtract(start).TotalMilliseconds}ms";
+        }
+
+        private void SaveBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Save();
+        }
+
+        private void LoadBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Load();
         }
     }
 }
