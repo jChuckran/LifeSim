@@ -182,15 +182,15 @@ namespace LifeSim.UI.Boards
         public double XOffset { get; set; } = 0;
         public double YOffset { get; set; } = 0;
 
-        public CellCollection Cells { get; set; } = new CellCollection();
+        private CellCollection cellCollection { get; set; } = new CellCollection();
 
         public async void Generate()
         {
             var start = DateTime.Now;
 
-            Cells.ClearCells();
+            cellCollection.ClearCells();
 
-            Cells.Randomize(decimal.ToDouble(LiveDensity), (long)LeftRenderEdge / CellSize, (long)RightRenderEdge / CellSize, (long)TopRenderEdge / CellSize, (long)BottomRenderEdge / CellSize);
+            cellCollection.Randomize(decimal.ToDouble(LiveDensity), (long)LeftRenderEdge / CellSize, (long)RightRenderEdge / CellSize, (long)TopRenderEdge / CellSize, (long)BottomRenderEdge / CellSize);
 
             //Cells.GetOrAddCell(-1, 0, true, true);
             //Cells.GetOrAddCell(0, 0, true, true);
@@ -231,7 +231,7 @@ namespace LifeSim.UI.Boards
             for (int x = 0; x < count; x++)
             {
                 var start = DateTime.Now;
-                await Cells.Advance();
+                await cellCollection.Advance();
                 RenderWorld();
                 FrameRenderTime.Content = $"{(int)DateTime.Now.Subtract(start).TotalMilliseconds}ms";
             }
@@ -253,14 +253,14 @@ namespace LifeSim.UI.Boards
             TopEdge.Content = TopRenderEdge.ToString();
             RightEdge.Content = RightRenderEdge.ToString();
             BottomEdge.Content = BottomRenderEdge.ToString();
-            Offsets.Content = $"XOffset:{XOffset.ToString().PadRight(6)} YOffset:{YOffset}";
-            Viewable.Content = $"Width:{Math.Abs(LeftRenderEdge - RightRenderEdge)} Height:{Math.Abs(TopRenderEdge - BottomRenderEdge)}";
-            CenterXY.Content = $"CenterX:{CenterX.ToString().PadRight(6)} CenterY:{CenterY}";
+            Offsets.Content = $"XOffset: {XOffset.ToString().PadRight(6)} YOffset: {YOffset}";
+            Viewable.Content = $"Width: {Math.Abs(LeftRenderEdge - RightRenderEdge)} Height: {Math.Abs(TopRenderEdge - BottomRenderEdge)}";
+            Iteration.Content = $"Iteration: {cellCollection?.Iteration}";
 
-            if (Cells == null)
+            if (cellCollection == null)
                 return;
 
-            var viewableCells = Cells.Where((c) => (c.X >= LeftRenderEdge / CellSize && c.X <= RightRenderEdge / CellSize) && (c.Y >= TopRenderEdge / CellSize && c.Y <= BottomRenderEdge / CellSize)).ToList();
+            var viewableCells = cellCollection.Cells.Where((c) => (c.X >= LeftRenderEdge / CellSize && c.X <= RightRenderEdge / CellSize) && (c.Y >= TopRenderEdge / CellSize && c.Y <= BottomRenderEdge / CellSize)).ToList();
 
             foreach (TrackedCell cell in viewableCells)
             {
@@ -293,7 +293,7 @@ namespace LifeSim.UI.Boards
         {
             var start = DateTime.Now;
             var cellPoint = GetCellPoint(canvasPoint);
-            Cells.ToggleCell((long)cellPoint.X, (long)cellPoint.Y);
+            cellCollection.ToggleCell((long)cellPoint.X, (long)cellPoint.Y);
             RenderWorld();
             FrameRenderTime.Content = $"{(int)DateTime.Now.Subtract(start).TotalMilliseconds}ms";
         }
@@ -304,7 +304,7 @@ namespace LifeSim.UI.Boards
             if (saveFileDialog.ShowDialog() == true)
             {
                 Mouse.OverrideCursor = Cursors.Wait;
-                var cellJson = Cells.Export();
+                var cellJson = cellCollection.Export();
                 File.WriteAllText(saveFileDialog.FileName, cellJson);
                 Mouse.OverrideCursor = null;
             }
@@ -317,7 +317,7 @@ namespace LifeSim.UI.Boards
             {
                 Mouse.OverrideCursor = Cursors.Wait;
                 var cellJson = File.ReadAllText(openFileDialog.FileName);
-                Cells.Import(cellJson);
+                cellCollection.Import(cellJson);
                 Refresh();
                 Mouse.OverrideCursor = null;
             }
@@ -409,7 +409,7 @@ namespace LifeSim.UI.Boards
         private void ClearBtn_Click(object sender, RoutedEventArgs e)
         {
             var start = DateTime.Now;
-            Cells.ClearCells();
+            cellCollection.ClearCells();
             RenderWorld();
             FrameRenderTime.Content = $"{(int)DateTime.Now.Subtract(start).TotalMilliseconds}ms";
         }

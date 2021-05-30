@@ -9,9 +9,14 @@ using Newtonsoft.Json;
 
 namespace LifeSim.Engine2D.Models
 {
-    public class CellCollection : List<TrackedCell>
+    public class CellCollection : ICellCollection
     {
+
+        public List<TrackedCell> Cells { get; set; } = new List<TrackedCell>();
+
         private object cellSync = new object();
+
+        public long Iteration { get; set; }
 
         public string Export()
         {
@@ -21,8 +26,9 @@ namespace LifeSim.Engine2D.Models
         public void Import(string cellJson)
         {
             ClearCells();
-            var cells = JsonConvert.DeserializeObject<IEnumerable<Cell>>(cellJson);
-            foreach (Cell cell in cells)
+            var cc = JsonConvert.DeserializeObject<CellCollection>(cellJson);
+            Iteration = cc.Iteration;
+            foreach (Cell cell in cc.Cells)
             {
                 UpdateCell(cell.X, cell.Y, cell.IsAlive);
             }
@@ -32,7 +38,8 @@ namespace LifeSim.Engine2D.Models
         {
             lock (cellSync)
             {
-                Clear();
+                Cells.Clear();
+                Iteration = 0;
             }
         }
 
@@ -42,7 +49,7 @@ namespace LifeSim.Engine2D.Models
             {
                 lock (cellSync)
                 {
-                    var allCells = this.ToList();
+                    var allCells = Cells.ToList();
                     foreach (TrackedCell cell in allCells)
                     {
                         cell.DetermineNextLiveState();
@@ -68,9 +75,10 @@ namespace LifeSim.Engine2D.Models
                                 if (neighbor.Neighbors.Contains(cell))
                                     neighbor.Neighbors.Remove(cell);
                             }
-                            Remove(cell);
+                            Cells.Remove(cell);
                         }
                     }
+                    Iteration++;
                 }
             });
         }
@@ -93,7 +101,7 @@ namespace LifeSim.Engine2D.Models
 
         public void AddExisting(List<TrackedCell> existing, long x, long y)
         {
-            var res = this.Where((c) => c.X == x && c.Y == y);
+            var res = Cells.Where((c) => c.X == x && c.Y == y);
             if (res.Any())
                 existing.Add(res.First());
         }
@@ -118,7 +126,7 @@ namespace LifeSim.Engine2D.Models
         {
             lock (cellSync)
             {
-                var res = this.Where((c) => c.X == x && c.Y == y);
+                var res = Cells.Where((c) => c.X == x && c.Y == y);
                 if (res.Any())
                 {
                     var c = res.First();
@@ -168,7 +176,7 @@ namespace LifeSim.Engine2D.Models
                 }
                 newCell.Neighbors.AddRange(existing);
             }
-            Add(newCell);
+            Cells.Add(newCell);
             if (newIsAlive)
                 newCell.CheckForNewNeighbors();
             return newCell;

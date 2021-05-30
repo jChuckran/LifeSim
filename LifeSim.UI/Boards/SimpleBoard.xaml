@@ -70,7 +70,7 @@
         <Canvas x:Name="WorldCanvas" Grid.Row="1" ClipToBounds="True" SizeChanged="WorldCanvas_SizeChanged" Cursor="Hand" Background="White"
                 MouseLeftButtonDown="WorldCanvas_MouseLeftButtonDown" MouseMove="WorldCanvas_MouseMove" MouseLeftButtonUp="WorldCanvas_MouseLeftButtonUp"
                 MouseWheel="WorldCanvas_MouseWheel"/>
-        <Label x:Name="LeftEdge" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="0" RenderTransformOrigin="0.5,0.5">
+        <Label x:Name="LeftEdge" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="0" RenderTransformOrigin="0.5,0.5" Margin="1" FontSize="10">
             <Label.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -80,8 +80,8 @@
                 </TransformGroup>
             </Label.RenderTransform>
         </Label>
-        <Label x:Name="TopEdge" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Top" Padding="0"/>
-        <Label x:Name="RightEdge" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Padding="0" RenderTransformOrigin="0.5,0.5">
+        <Label x:Name="TopEdge" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Top" Padding="0" Margin="1" FontSize="10"/>
+        <Label x:Name="RightEdge" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Padding="0" RenderTransformOrigin="0.5,0.5" Margin="1" FontSize="10">
             <Label.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -91,11 +91,11 @@
                 </TransformGroup>
             </Label.RenderTransform>
         </Label>
-        <Label x:Name="BottomEdge" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Padding="0"/>
-        <Label x:Name="Offsets" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="0"/>
-        <Label x:Name="Viewable" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="0"/>
-        <Label x:Name="CenterXY" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0"/>
-        <Label x:Name="FrameRenderTime" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top" Padding="0"/>
+        <Label x:Name="BottomEdge" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Padding="0" Margin="1" FontSize="10"/>
+        <Label x:Name="Offsets" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="0" Margin="1"/>
+        <Label x:Name="Viewable" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="0" Margin="1"/>
+        <Label x:Name="Iteration" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0" Margin="1"/>
+        <Label x:Name="FrameRenderTime" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top" Padding="0" Margin="1"/>
         <!--<controls:DynamicGrid x:Name="WorldGrid" Grid.Row="1" Background="Blue">
             <controls:DynamicGrid.Resources>
                 <Style TargetType="{x:Type controls:DynamicCell}">
