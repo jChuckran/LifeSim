@@ -284,9 +284,9 @@ namespace LifeSim.UI.Boards
 
         private Point GetCellPoint(Point canvasPoint)
         {
-            var cx = Math.Round(canvasPoint.X / CellSize) * CellSize;
-            var cy = Math.Round(canvasPoint.Y / CellSize) * CellSize;
-            return new Point((cx + XOffset - CenterX) / CellSize, (cy + YOffset - CenterY) / CellSize);
+            var cx = Math.Round((canvasPoint.X - XOffset) / CellSize) * CellSize;
+            var cy = Math.Round((canvasPoint.Y - YOffset) / CellSize) * CellSize;
+            return new Point((cx - CenterX) / CellSize , (cy - CenterY) / CellSize);
         }
 
         private void ToggleCellAtCanvasPoint(Point canvasPoint)

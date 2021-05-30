@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using LifeSim.Engine2D.Rules;
 
 namespace LifeSim.Engine2D.Models
 {
@@ -14,19 +15,23 @@ namespace LifeSim.Engine2D.Models
 
         public List<TrackedCell> Cells { get; set; } = new List<TrackedCell>();
 
+        public IRules Rules { get; set; } = new ConwaysGameOfLife();
+
         private object cellSync = new object();
 
         public long Iteration { get; set; }
 
         public string Export()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            var settings = new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Auto};
+            return JsonConvert.SerializeObject(this, Formatting.Indented, settings);
         }
 
         public void Import(string cellJson)
         {
             ClearCells();
             var cc = JsonConvert.DeserializeObject<CellCollection>(cellJson);
+            Rules = cc.Rules;
             Iteration = cc.Iteration;
             foreach (Cell cell in cc.Cells)
             {
@@ -52,7 +57,7 @@ namespace LifeSim.Engine2D.Models
                     var allCells = Cells.ToList();
                     foreach (TrackedCell cell in allCells)
                     {
-                        cell.DetermineNextLiveState();
+                        cell.DetermineNextState(Rules);
                     }
                     foreach (TrackedCell cell in allCells)
                     {

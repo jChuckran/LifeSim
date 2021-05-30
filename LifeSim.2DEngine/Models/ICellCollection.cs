@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using LifeSim.Engine2D.Rules;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace LifeSim.Engine2D.Models
@@ -6,6 +7,7 @@ namespace LifeSim.Engine2D.Models
     public interface ICellCollection
     {
         List<TrackedCell> Cells { get; set; }
+        IRules Rules { get; set; }
         long Iteration { get; set; }
         void AddExisting(List<TrackedCell> existing, long x, long y);
         void AddLivingCell(long x, long y);

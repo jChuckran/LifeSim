@@ -1,4 +1,4 @@
-﻿using LifeSim.Engine2D.Helpers;
+﻿using LifeSim.Engine2D.Rules;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,19 +40,9 @@ namespace LifeSim.Engine2D.Models
             _cellCollection.GetNewNeighbors(Neighbors, X, Y);
         }
 
-        public void DetermineNextLiveState()
+        public void DetermineNextState(IRules rules)
         {
-            //Any live cell with fewer than two live neighbours dies, as if by underpopulation.
-            //Any live cell with more than three live neighbours dies, as if by overpopulation.
-            //Any live cell with two or three live neighbours lives on to the next generation.
-            //Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.         
-
-            int liveNeighbors = Neighbors.Where(x => x.IsAlive).Count();
-
-            if (IsAlive)
-                IsAliveNext = liveNeighbors == 2 || liveNeighbors == 3;
-            else
-                IsAliveNext = liveNeighbors == 3;
+            IsAliveNext = rules.GetNextLivingState(this);
         }
 
         public void Advance()
