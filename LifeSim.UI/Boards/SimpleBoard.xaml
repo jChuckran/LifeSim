@@ -55,8 +55,9 @@
                 </Grid>
             </StackPanel>
             <Grid Grid.Column="2">
-                <UniformGrid Columns="4">
+                <UniformGrid Columns="5">
                     <Button x:Name="GenerateBtn" Content="Generate" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" Padding="2" Click="Generate_Click"/>
+                    <Button x:Name="ClearBtn" Content="Clear" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" Padding="2" Click="ClearBtn_Click"/>
                     <Button x:Name="AdvanceBtn" Content="Advance" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" Padding="2" Click="Advance_Click"/>
                     <!--<Button x:Name="AdvanceTenBtn" Content="Advance 10" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" Padding="2" Click="AdvanceTen_Click"/>-->
                     <Button x:Name="AdvanceHundredBtn" Content="Advance 100" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" Padding="2" Click="AdvanceHundred_Click"/>

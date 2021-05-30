@@ -12,6 +12,14 @@ namespace LifeSim.Engine2D.Models
     {
         private object cellSync = new object();
 
+        public void ClearCells()
+        {
+            lock (cellSync)
+            {
+                Clear();
+            }
+        }
+
         public async Task Advance()
         {
             await Task.Run(() =>
@@ -60,7 +68,7 @@ namespace LifeSim.Engine2D.Models
                 {
                     if (rand.NextDouble() < liveDensity)
                     {
-                        GetOrAddCell(x, y, true, true);
+                        AddLivingCell(x, y);
                     }
                 }
             }
@@ -74,6 +82,13 @@ namespace LifeSim.Engine2D.Models
                 existing.Add(res.First());
         }
 
+        public void AddLivingCell(long x, long y)
+        {
+            lock (cellSync)
+            {
+                GetOrAddCell(x, y, true, true);
+            }
+        }
 
         public Cell GetOrAddCell(long x, long y, bool newIsAlive, bool updateExisting = false)
         {

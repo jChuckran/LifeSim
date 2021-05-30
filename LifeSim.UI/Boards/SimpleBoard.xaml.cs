@@ -6,6 +6,7 @@ using System.Windows.Shapes;
 using System.Linq;
 using LifeSim.Engine2D.Models;
 using System;
+using System.Windows.Input;
 
 namespace LifeSim.UI.Boards
 {
@@ -179,16 +180,16 @@ namespace LifeSim.UI.Boards
         public double XOffset { get; set; } = 0;
         public double YOffset { get; set; } = 0;
 
-        public CellCollection Cells { get; set; }
+        public CellCollection Cells { get; set; } = new CellCollection();
 
         public async void Generate()
         {
             var start = DateTime.Now;
 
-            Cells = new CellCollection();
+            Cells.ClearCells();
 
-            Cells.Randomize(decimal.ToDouble(LiveDensity), (long)LeftRenderEdge / CellSize, (long)RightRenderEdge / CellSize,
-                                                           (long)TopRenderEdge / CellSize, (long)BottomRenderEdge / CellSize);
+            Cells.Randomize(decimal.ToDouble(LiveDensity), (long)LeftRenderEdge / CellSize, (long)RightRenderEdge / CellSize, (long)TopRenderEdge / CellSize, (long)BottomRenderEdge / CellSize);
+
             //Cells.GetOrAddCell(-1, 0, true, true);
             //Cells.GetOrAddCell(0, 0, true, true);
             //Cells.GetOrAddCell(1, 0, true, true);
@@ -272,6 +273,22 @@ namespace LifeSim.UI.Boards
             WorldCanvas.Children.Add(ellipse);
         }
 
+        private Point GetCellPoint(Point canvasPoint)
+        {
+            var cx = Math.Round(canvasPoint.X / CellSize) * CellSize;
+            var cy = Math.Round(canvasPoint.Y / CellSize) * CellSize;
+            return new Point((cx + XOffset - CenterX) / CellSize, (cy + YOffset - CenterY) / CellSize);
+        }
+
+        private void AddCellAtCanvasPoint(Point canvasPoint)
+        {
+            var start = DateTime.Now;
+            var cellPoint = GetCellPoint(canvasPoint);
+            Cells.AddLivingCell((long)cellPoint.X, (long)cellPoint.Y);
+            RenderWorld();
+            FrameRenderTime.Content = $"{(int)DateTime.Now.Subtract(start).TotalMilliseconds}ms";
+        }
+
         private void Generate_Click(object sender, RoutedEventArgs e)
         {
             Generate();
@@ -323,11 +340,18 @@ namespace LifeSim.UI.Boards
 
         private void WorldCanvas_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (e.ClickCount == 1)
+            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
             {
-                _dragStartPoint = e.GetPosition(this);
-                WorldCanvas.Focus();
-                WorldCanvas.CaptureMouse();
+                AddCellAtCanvasPoint(e.GetPosition(WorldCanvas));
+            }
+            else
+            {
+                if (e.ClickCount == 1)
+                {
+                    _dragStartPoint = e.GetPosition(this);
+                    WorldCanvas.Focus();
+                    WorldCanvas.CaptureMouse();
+                }
             }
             e.Handled = true;
         }
@@ -348,5 +372,12 @@ namespace LifeSim.UI.Boards
 
         #endregion
 
+        private void ClearBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var start = DateTime.Now;
+            Cells.ClearCells();
+            RenderWorld();
+            FrameRenderTime.Content = $"{(int)DateTime.Now.Subtract(start).TotalMilliseconds}ms";
+        }
     }
 }
