@@ -254,7 +254,7 @@ namespace LifeSim.UI.Boards
             RightEdge.Content = RightRenderEdge.ToString();
             BottomEdge.Content = BottomRenderEdge.ToString();
             Offsets.Content = $"XOffset: {XOffset.ToString().PadRight(6)} YOffset: {YOffset}";
-            Viewable.Content = $"Width: {Math.Abs(LeftRenderEdge - RightRenderEdge)} Height: {Math.Abs(TopRenderEdge - BottomRenderEdge)}";
+            CellCount.Content = $"Total Cells: {cellCollection.Cells.Count()} Living Cells: {cellCollection.Cells.Where((c) => c.IsAlive).Count()}";
             Iteration.Content = $"Iteration: {cellCollection?.Iteration}";
 
             if (cellCollection == null)
