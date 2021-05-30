@@ -90,6 +90,29 @@ namespace LifeSim.Engine2D.Models
             }
         }
 
+        public void UpdateCell(long x, long y, bool isAlive)
+        {
+            lock (cellSync)
+            {
+                GetOrAddCell(x, y, isAlive, true);
+            }
+        }
+
+        public void ToggleCell(long x, long y)
+        {
+            lock (cellSync)
+            {
+                var res = this.Where((c) => c.X == x && c.Y == y);
+                if (res.Any())
+                {
+                    var c = res.First();
+                    c.IsAlive = !c.IsAlive;
+                }
+                else
+                    GetOrAddCell(x, y, true, true);
+            }
+        }
+
         public Cell GetOrAddCell(long x, long y, bool newIsAlive, bool updateExisting = false)
         {
             List<Cell> existing = new List<Cell>();

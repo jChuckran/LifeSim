@@ -280,11 +280,11 @@ namespace LifeSim.UI.Boards
             return new Point((cx + XOffset - CenterX) / CellSize, (cy + YOffset - CenterY) / CellSize);
         }
 
-        private void AddCellAtCanvasPoint(Point canvasPoint)
+        private void ToggleCellAtCanvasPoint(Point canvasPoint)
         {
             var start = DateTime.Now;
             var cellPoint = GetCellPoint(canvasPoint);
-            Cells.AddLivingCell((long)cellPoint.X, (long)cellPoint.Y);
+            Cells.ToggleCell((long)cellPoint.X, (long)cellPoint.Y);
             RenderWorld();
             FrameRenderTime.Content = $"{(int)DateTime.Now.Subtract(start).TotalMilliseconds}ms";
         }
@@ -342,7 +342,7 @@ namespace LifeSim.UI.Boards
         {
             if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
             {
-                AddCellAtCanvasPoint(e.GetPosition(WorldCanvas));
+                ToggleCellAtCanvasPoint(e.GetPosition(WorldCanvas));
             }
             else
             {
