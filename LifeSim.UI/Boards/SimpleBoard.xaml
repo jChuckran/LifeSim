@@ -1,0 +1,116 @@
+﻿<UserControl x:Class="LifeSim.UI.Boards.SimpleBoard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:controls="clr-namespace:LifeSim.UI.Controls"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
+    <UserControl.Resources>
+        <Style x:Key="RunBtnStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Content" Value="Run"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=Running}" Value="True">
+                    <Setter Property="Content" Value="Stop"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="IsEnabled" Value="True"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=Running}" Value="True">
+                    <Setter Property="IsEnabled" Value="False"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid x:Name="ControlPanel">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Label VerticalAlignment="Center" Content="Cell Size"/>
+                    <xctk:IntegerUpDown Grid.Column="1" Width="70" VerticalAlignment="Center" Value="{Binding CellSize}" ValueChanged="CellSize_ValueChanged"/>
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Label VerticalAlignment="Center" Content="Live Density"/>
+                    <xctk:DecimalUpDown Grid.Column="1" Width="70" VerticalAlignment="Center" Maximum="1" Minimum="0" Increment="0.01" FormatString="0.000" Value="{Binding LiveDensity}"/>
+                </Grid>
+            </StackPanel>
+            <Grid Grid.Column="2">
+                <UniformGrid Columns="4">
+                    <Button x:Name="GenerateBtn" Content="Generate" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" Padding="2" Click="Generate_Click"/>
+                    <Button x:Name="AdvanceBtn" Content="Advance" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" Padding="2" Click="Advance_Click"/>
+                    <!--<Button x:Name="AdvanceTenBtn" Content="Advance 10" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" Padding="2" Click="AdvanceTen_Click"/>-->
+                    <Button x:Name="AdvanceHundredBtn" Content="Advance 100" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" Padding="2" Click="AdvanceHundred_Click"/>
+                    <Button x:Name="RunBtn" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" Padding="2" Click="RunBtn_Click" Style="{DynamicResource RunBtnStyle}"/>
+                </UniformGrid>
+            </Grid>
+        </Grid>
+        <Canvas x:Name="WorldCanvas" Grid.Row="1" ClipToBounds="True" SizeChanged="WorldCanvas_SizeChanged" Cursor="Hand" Background="White"
+                MouseLeftButtonDown="WorldCanvas_MouseLeftButtonDown" MouseMove="WorldCanvas_MouseMove" MouseLeftButtonUp="WorldCanvas_MouseLeftButtonUp"
+                MouseWheel="WorldCanvas_MouseWheel"/>
+        <Label x:Name="LeftEdge" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="0" RenderTransformOrigin="0.5,0.5">
+            <Label.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-90"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Label.RenderTransform>
+        </Label>
+        <Label x:Name="TopEdge" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Top" Padding="0"/>
+        <Label x:Name="RightEdge" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Padding="0" RenderTransformOrigin="0.5,0.5">
+            <Label.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="90"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Label.RenderTransform>
+        </Label>
+        <Label x:Name="BottomEdge" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Padding="0"/>
+        <Label x:Name="Offsets" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="0"/>
+        <Label x:Name="Viewable" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="0"/>
+        <Label x:Name="CenterXY" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0"/>
+        <Label x:Name="FrameRenderTime" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top" Padding="0"/>
+        <!--<controls:DynamicGrid x:Name="WorldGrid" Grid.Row="1" Background="Blue">
+            <controls:DynamicGrid.Resources>
+                <Style TargetType="{x:Type controls:DynamicCell}">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type controls:DynamicCell}">
+                                <Grid Background="{TemplateBinding Background}"/>
+                                <ControlTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding IsAlive}" Value="True">
+                                        <Setter Property="Background" Value="Black"/>
+                                    </DataTrigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </controls:DynamicGrid.Resources>
+        </controls:DynamicGrid>-->
+    </Grid>
+</UserControl>
