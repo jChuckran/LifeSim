@@ -36,6 +36,17 @@ namespace LifeSim.UI.CellGraphics
             }
         }
 
+        private Color _gridLinesColor = Colors.Black;
+        public Color GridLinesColor
+        {
+            get { return _gridLinesColor; }
+            set
+            {
+                _gridLinesColor = value;
+                OnPropertyChanged();
+            }
+        }
+
         private bool _showAllCells = false;
         public bool ShowAllCells
         {
@@ -85,15 +96,30 @@ namespace LifeSim.UI.CellGraphics
             //Draw Grid Lines
             if (ShowGridLines)
             {
-
+                var columns = edges.Width / cellSize;
+                var rows = edges.Height / cellSize;
+                var leftMostLine = edges.Left - edges.Left % cellSize;
+                var topMostLine = edges.Top - edges.Top % cellSize;
+                for (double c = 0; c <= columns; c++)
+                {
+                    var l = leftMostLine + (c * cellSize);
+                    var newLine = l + CenterX + xOffset - (cellSize / 2);
+                    AddLine(newLine, 0, newLine, Surface.ActualHeight, 1, GridLinesColor);
+                }
+                for (double r = 0; r <= rows; r++)
+                {
+                    var t = topMostLine + (r * cellSize);
+                    var newLine = t + CenterY + yOffset - (cellSize / 2);
+                    AddLine(0, newLine, Surface.ActualWidth, newLine, 1, GridLinesColor);
+                }
             }
             //Draw Cells
             foreach (TrackedCell cell in viewableCells)
             {
                 if (cell.IsAlive)
-                    AddPoint(cellSize, cellSize, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, AliveCellColor);
+                    AddEllipse(cellSize, cellSize, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, AliveCellColor);
                 else if (ShowAllCells)
-                    AddPoint(cellSize, cellSize, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, DeadCellColor);
+                    AddEllipse(cellSize, cellSize, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, DeadCellColor);
             }
         }
 

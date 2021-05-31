@@ -61,13 +61,21 @@ namespace LifeSim.UI.CellGraphics
             return cellCollection.Cells.Where((c) => c.X >= renderEdges.Left / cellSize && c.X <= renderEdges.Right / cellSize && c.Y >= renderEdges.Top / cellSize && c.Y <= renderEdges.Bottom / cellSize).ToList();
         }
 
-        public void AddPoint(double width, double height, double drawX, double drawY, Color color)
+        public void AddEllipse(double width, double height, double drawX, double drawY, Color color)
         {
             var ellipse = new Ellipse() { Width = width, Height = height };
             ellipse.Fill = new SolidColorBrush(color);
             Canvas.SetLeft(ellipse, drawX - width / 2);
             Canvas.SetTop(ellipse, drawY - height / 2);
             Surface.Children.Add(ellipse);
+        }
+
+        public void AddLine(double x1, double y1, double x2, double y2, double width, Color color)
+        {
+            var line = new Line() { X1 = x1, Y1 = y1, X2 = x2, Y2 = y2 };
+            line.Stroke = new SolidColorBrush(color);
+            line.StrokeThickness = width;
+            Surface.Children.Add(line);
         }
 
         public void Initialize(Canvas surface)

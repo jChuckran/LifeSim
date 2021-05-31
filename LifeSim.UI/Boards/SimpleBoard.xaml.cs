@@ -186,7 +186,7 @@ namespace LifeSim.UI.Boards
             }
         }
 
-        public double XOffset { get; set; } = 0;
+        public double XOffset { get; set; } = -10;
         public double YOffset { get; set; } = 0;
 
         private CellCollection cellCollection { get; set; } = new CellCollection();
