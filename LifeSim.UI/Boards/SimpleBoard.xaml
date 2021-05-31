@@ -48,7 +48,7 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Label VerticalAlignment="Center" Content="Cell Size"/>
-                    <xctk:IntegerUpDown Grid.Column="1" Width="70" VerticalAlignment="Center" Value="{Binding CellSize}" Foreground="{Binding Foreground}" ValueChanged="CellSize_ValueChanged"/>
+                    <xctk:IntegerUpDown Grid.Column="1" Width="70" VerticalAlignment="Center" Value="{Binding CellSize}" Foreground="{Binding MaterialDesignBody}" ValueChanged="CellSize_ValueChanged"/>
                 </Grid>
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -56,7 +56,7 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Label VerticalAlignment="Center" Content="Live Density"/>
-                    <xctk:DecimalUpDown Grid.Column="1" Width="70" VerticalAlignment="Center" Maximum="1" Minimum="0" Increment="0.01" FormatString="0.000" Value="{Binding LiveDensity}" Foreground="{Binding Foreground}"/>
+                    <xctk:DecimalUpDown Grid.Column="1" Width="70" VerticalAlignment="Center" Maximum="1" Minimum="0" Increment="0.01" FormatString="0.000" Value="{Binding LiveDensity}" Foreground="{Binding MaterialDesignBody}"/>
                 </Grid>
             </StackPanel>
             <Grid Grid.Column="2">
