@@ -199,10 +199,6 @@ namespace LifeSim.UI.Boards
 
             cellCollection.Randomize(decimal.ToDouble(LiveDensity), (long)LeftRenderEdge / CellSize, (long)RightRenderEdge / CellSize, (long)TopRenderEdge / CellSize, (long)BottomRenderEdge / CellSize);
 
-            //Cells.GetOrAddCell(-1, 0, true, true);
-            //Cells.GetOrAddCell(0, 0, true, true);
-            //Cells.GetOrAddCell(1, 0, true, true);
-
             RenderWorld();
 
             FrameRenderTime.Content = $"{(int)DateTime.Now.Subtract(start).TotalMilliseconds}ms";
