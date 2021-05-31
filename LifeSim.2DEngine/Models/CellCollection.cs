@@ -23,8 +23,13 @@ namespace LifeSim.Engine2D.Models
 
         public string Export()
         {
+            var aliveCells = Cells.Where((c) => c.IsAlive).ToList();
+            var exportCollection = new CellCollection();
+            exportCollection.Iteration = Iteration;
+            exportCollection.Rules = Rules;
+            exportCollection.Cells = aliveCells;
             var settings = new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Auto};
-            return JsonConvert.SerializeObject(this, Formatting.Indented, settings);
+            return JsonConvert.SerializeObject(exportCollection, Formatting.Indented, settings);
         }
 
         public void Import(string cellJson)
