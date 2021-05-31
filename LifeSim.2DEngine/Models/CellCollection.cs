@@ -13,13 +13,14 @@ namespace LifeSim.Engine2D.Models
     public class CellCollection : ICellCollection
     {
 
+        private object cellSync = new object();
         public List<TrackedCell> Cells { get; set; } = new List<TrackedCell>();
 
         public IRules Rules { get; set; } = new ConwaysGameOfLife();
 
-        private object cellSync = new object();
-
         public long Iteration { get; set; }
+
+        public string Seed { get; set; } = string.Empty;
 
         public string Export()
         {
@@ -33,10 +34,41 @@ namespace LifeSim.Engine2D.Models
             var cc = JsonConvert.DeserializeObject<CellCollection>(cellJson);
             Rules = cc.Rules;
             Iteration = cc.Iteration;
+            Seed = cc.Seed;
             foreach (Cell cell in cc.Cells)
             {
                 UpdateCell(cell.X, cell.Y, cell.IsAlive);
             }
+        }
+
+        public void GenerateSeed()
+        {
+            Seed = GenerateSeed(Cells);
+        }
+
+        public string GenerateSeed(List<TrackedCell> cells, char deadChar = '.', char aliveChar = 'O')
+        {
+            var aliveCells = cells.Where(c => c.IsAlive);
+            if (!aliveCells.Any())
+                return string.Empty;
+            var leftMostCell = aliveCells.Aggregate((curMin, x) => (curMin == null || x.X < curMin.X ? x : curMin));
+            var topMostCell = aliveCells.Aggregate((curMin, y) => (curMin == null || y.Y < curMin.Y ? y : curMin));
+            var rightMostCell = aliveCells.Aggregate((curMax, x) => (curMax == null || x.X > curMax.X ? x : curMax));
+            var bottomMostCell = aliveCells.Aggregate((curMax, y) => (curMax == null || y.Y > curMax.Y ? y : curMax));
+            var lines = new List<string>();
+            for (long y = topMostCell.Y; y <= bottomMostCell.Y; y++) 
+            {
+                string line = string.Empty;
+                for (long x = leftMostCell.X; x <= rightMostCell.X; x++)
+                {
+                    if (aliveCells.Any(c => c.X == x && c.Y == y))
+                        line += aliveChar;
+                    else
+                        line += deadChar;
+                }
+                lines.Add(line.TrimEnd(deadChar));
+            }
+            return lines.Aggregate((a, b) => a + Environment.NewLine + b); ;
         }
 
         public void ClearCells()
@@ -45,6 +77,7 @@ namespace LifeSim.Engine2D.Models
             {
                 Cells.Clear();
                 Iteration = 0;
+                Seed = string.Empty;
             }
         }
 
@@ -101,7 +134,6 @@ namespace LifeSim.Engine2D.Models
                     }
                 }
             }
-
         }
 
         public void AddExisting(List<TrackedCell> existing, long x, long y)
@@ -139,6 +171,8 @@ namespace LifeSim.Engine2D.Models
                 }
                 else
                     GetOrAddCell(x, y, true, true);
+                Iteration = 0;
+                GenerateSeed();
             }
         }
 

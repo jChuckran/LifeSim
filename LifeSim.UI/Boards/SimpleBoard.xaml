@@ -22,10 +22,16 @@
             </Style.Triggers>
         </Style>
         <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-            <Setter Property="IsEnabled" Value="True"/>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Path=Running}" Value="True">
-                    <Setter Property="IsEnabled" Value="False"/>
+                    <Setter Property="Visibility" Value="Hidden"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="GridHideWhenRunning" TargetType="Grid">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=Running}" Value="True">
+                    <Setter Property="Visibility" Value="Hidden"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -35,14 +41,17 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Grid x:Name="ControlPanel">
+        <Canvas x:Name="WorldCanvas" Grid.RowSpan="2" ClipToBounds="True" SizeChanged="WorldCanvas_SizeChanged" Cursor="Hand" Background="Transparent"
+                MouseLeftButtonDown="WorldCanvas_MouseLeftButtonDown" MouseMove="WorldCanvas_MouseMove" MouseLeftButtonUp="WorldCanvas_MouseLeftButtonUp"
+                MouseWheel="WorldCanvas_MouseWheel"/>
+        <Grid x:Name="ControlPanel" Margin="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <StackPanel Orientation="Horizontal">
-                <Grid>
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                <Grid Style="{StaticResource GridHideWhenRunning}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition/>
@@ -50,7 +59,7 @@
                     <Label VerticalAlignment="Center" Content="Cell Size"/>
                     <xctk:IntegerUpDown Grid.Column="1" Width="70" VerticalAlignment="Center" Value="{Binding CellSize}" Foreground="{Binding MaterialDesignBody}" ValueChanged="CellSize_ValueChanged"/>
                 </Grid>
-                <Grid>
+                <Grid Style="{StaticResource GridHideWhenRunning}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition/>
@@ -58,24 +67,18 @@
                     <Label VerticalAlignment="Center" Content="Live Density"/>
                     <xctk:DecimalUpDown Grid.Column="1" Width="70" VerticalAlignment="Center" Maximum="1" Minimum="0" Increment="0.01" FormatString="0.000" Value="{Binding LiveDensity}" Foreground="{Binding MaterialDesignBody}"/>
                 </Grid>
-            </StackPanel>
-            <Grid Grid.Column="2">
                 <UniformGrid Columns="7">
                     <Button x:Name="GenerateBtn" Content="Generate" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" Padding="2" Click="Generate_Click"/>
                     <Button x:Name="ClearBtn" Content="Clear" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" Padding="2" Click="ClearBtn_Click"/>
                     <Button x:Name="SaveBtn" Content="Save" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" Padding="2" Click="SaveBtn_Click"/>
                     <Button x:Name="LoadBtn" Content="Load" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" Padding="2" Click="LoadBtn_Click"/>
                     <Button x:Name="AdvanceBtn" Content="Advance" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" Click="Advance_Click"/>
-                    <!--<Button x:Name="AdvanceTenBtn" Content="Advance 10" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" Padding="2" Click="AdvanceTen_Click"/>-->
                     <Button x:Name="AdvanceHundredBtn" Content="Advance 100" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" Click="AdvanceHundred_Click"/>
                     <Button x:Name="RunBtn" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" Padding="2" Click="RunBtn_Click" Style="{DynamicResource RunBtnStyle}"/>
                 </UniformGrid>
-            </Grid>
+            </StackPanel>
         </Grid>
-        <Canvas x:Name="WorldCanvas" Grid.Row="1" ClipToBounds="True" SizeChanged="WorldCanvas_SizeChanged" Cursor="Hand" Background="Transparent"
-                MouseLeftButtonDown="WorldCanvas_MouseLeftButtonDown" MouseMove="WorldCanvas_MouseMove" MouseLeftButtonUp="WorldCanvas_MouseLeftButtonUp"
-                MouseWheel="WorldCanvas_MouseWheel"/>
-        <Label x:Name="LeftEdge" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="0" RenderTransformOrigin="0.5,0.5" Margin="1" FontSize="10">
+        <Label x:Name="LeftEdge" Grid.RowSpan="2" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="0" RenderTransformOrigin="0.5,0.5" Margin="-2,1,1,1" FontSize="10">
             <Label.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -85,8 +88,8 @@
                 </TransformGroup>
             </Label.RenderTransform>
         </Label>
-        <Label x:Name="TopEdge" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Top" Padding="0" Margin="1" FontSize="10"/>
-        <Label x:Name="RightEdge" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Padding="0" RenderTransformOrigin="0.5,0.5" Margin="1" FontSize="10">
+        <Label x:Name="TopEdge" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Top" Padding="0" Margin="1,-2,1,1" FontSize="10"/>
+        <Label x:Name="RightEdge" Grid.RowSpan="2" HorizontalAlignment="Right" VerticalAlignment="Center" Padding="0" RenderTransformOrigin="0.5,0.5" Margin="1,1,-2,1" FontSize="10">
             <Label.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -96,29 +99,9 @@
                 </TransformGroup>
             </Label.RenderTransform>
         </Label>
-        <Label x:Name="BottomEdge" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Padding="0" Margin="1" FontSize="10"/>
-        <Label x:Name="Offsets" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="0" Margin="1"/>
-        <Label x:Name="CellCount" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="0" Margin="1"/>
-        <Label x:Name="Iteration" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0" Margin="1"/>
-        <Label x:Name="FrameRenderTime" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top" Padding="0" Margin="1"/>
-        <!--<controls:DynamicGrid x:Name="WorldGrid" Grid.Row="1" Background="Blue">
-            <controls:DynamicGrid.Resources>
-                <Style TargetType="{x:Type controls:DynamicCell}">
-                    <Setter Property="Background" Value="Transparent"/>
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type controls:DynamicCell}">
-                                <Grid Background="{TemplateBinding Background}"/>
-                                <ControlTemplate.Triggers>
-                                    <DataTrigger Binding="{Binding IsAlive}" Value="True">
-                                        <Setter Property="Background" Value="Black"/>
-                                    </DataTrigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </controls:DynamicGrid.Resources>
-        </controls:DynamicGrid>-->
+        <Label x:Name="BottomEdge" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Bottom" Padding="0" Margin="1,1,1,-2" FontSize="10"/>
+        <Label x:Name="Offsets" Grid.RowSpan="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="0" Margin="1"/>
+        <Label x:Name="CellCount" Grid.RowSpan="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="0" Margin="1"/>
+        <Label x:Name="Iteration" Grid.RowSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0" Margin="1"/>
     </Grid>
 </UserControl>

@@ -265,7 +265,7 @@ namespace LifeSim.UI.Boards
             }
         }
 
-        public double XOffset { get; set; } = -10;
+        public double XOffset { get; set; } = 0;
         public double YOffset { get; set; } = 0;
 
         private CellCollection cellCollection { get; set; } = new CellCollection();
@@ -278,9 +278,11 @@ namespace LifeSim.UI.Boards
 
             cellCollection.Randomize(decimal.ToDouble(LiveDensity), (long)LeftRenderEdge / CellSize, (long)RightRenderEdge / CellSize, (long)TopRenderEdge / CellSize, (long)BottomRenderEdge / CellSize);
 
+            cellCollection.GenerateSeed();
+
             RenderWorld();
 
-            FrameRenderTime.Content = $"{(int)DateTime.Now.Subtract(start).TotalMilliseconds}ms";
+            UpdateIteration(start);
 
             await Task.CompletedTask;
         }
@@ -303,6 +305,7 @@ namespace LifeSim.UI.Boards
                 while (Running)
                 {
                     await Advance();
+                    await Task.Delay(1);
                 }
                 _runningLoop = false;
             }
@@ -315,7 +318,7 @@ namespace LifeSim.UI.Boards
                 var start = DateTime.Now;
                 await cellCollection.Advance();
                 RenderWorld();
-                FrameRenderTime.Content = $"{(int)DateTime.Now.Subtract(start).TotalMilliseconds}ms";
+                UpdateIteration(start);
             }
         }
 
@@ -323,28 +326,35 @@ namespace LifeSim.UI.Boards
         {
             if (Renderer == null)
                 return;
-            var start = DateTime.Now;
             RenderWorld();
-            FrameRenderTime.Content = $"{(int)DateTime.Now.Subtract(start).TotalMilliseconds}ms";
         }
 
         private void RenderWorld()
         {
             if (Renderer == null)
                 return;
-            LeftEdge.Content = LeftRenderEdge.ToString("N0");
-            TopEdge.Content = TopRenderEdge.ToString("N0");
-            RightEdge.Content = RightRenderEdge.ToString("N0");
-            BottomEdge.Content = BottomRenderEdge.ToString("N0");
-            Offsets.Content = $"XOffset: {XOffset:N0} YOffset: {YOffset:N0}";
-            CellCount.Content = $"Total Cells: {cellCollection.Cells.Count():N0} Living Cells: {cellCollection.Cells.Where((c) => c.IsAlive).Count():N0}";
-            Iteration.Content = $"Iteration: {cellCollection.Iteration:N0}";
+            UpdateInfo();
             if (Renderer is SimpleCanvasRenderer scr)
             {
                 scr.AliveCellColor = CellColor;
                 scr.GridLinesColor = GridLineColor;
             }
             Renderer.Render(cellCollection, CellSize, XOffset, YOffset);
+        }
+
+        private void UpdateIteration(DateTime iterationStart)
+        {
+            Iteration.Content = $"Iteration: {cellCollection.Iteration:N0} ({(int)DateTime.Now.Subtract(iterationStart).TotalMilliseconds}ms)";
+        }
+
+        private void UpdateInfo()
+        {
+            LeftEdge.Content = LeftRenderEdge.ToString("N0");
+            TopEdge.Content = TopRenderEdge.ToString("N0");
+            RightEdge.Content = RightRenderEdge.ToString("N0");
+            BottomEdge.Content = BottomRenderEdge.ToString("N0");
+            Offsets.Content = $"XOffset: {XOffset:N0} YOffset: {YOffset:N0}";
+            CellCount.Content = $"Total Cells: {cellCollection.Cells.Count():N0} Living Cells: {cellCollection.Cells.Where((c) => c.IsAlive).Count():N0}";
         }
 
         private Point GetCellPoint(Point canvasPoint)
@@ -360,7 +370,17 @@ namespace LifeSim.UI.Boards
             var cellPoint = GetCellPoint(canvasPoint);
             cellCollection.ToggleCell((long)cellPoint.X, (long)cellPoint.Y);
             RenderWorld();
-            FrameRenderTime.Content = $"{(int)DateTime.Now.Subtract(start).TotalMilliseconds}ms";
+            UpdateInfo();
+            UpdateIteration(start);
+        }
+
+        private void ClearCells()
+        {
+            var start = DateTime.Now;
+            cellCollection.ClearCells();
+            RenderWorld();
+            UpdateInfo();
+            UpdateIteration(start);
         }
         
         private void Save()
@@ -425,7 +445,7 @@ namespace LifeSim.UI.Boards
 
         private Point _dragStartPoint;
 
-        private void WorldCanvas_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        private void WorldCanvas_MouseMove(object sender, MouseEventArgs e)
         {
             if (WorldCanvas.IsMouseCaptured)
             {
@@ -437,7 +457,7 @@ namespace LifeSim.UI.Boards
             }
         }
 
-        private void WorldCanvas_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void WorldCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
             {
@@ -455,17 +475,19 @@ namespace LifeSim.UI.Boards
             e.Handled = true;
         }
 
-        private void WorldCanvas_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void WorldCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             WorldCanvas.ReleaseMouseCapture();
         }
 
-        private void WorldCanvas_MouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        private void WorldCanvas_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             var newSize = CellSize + (e.Delta / 120);
-            if (newSize < 1)
-                newSize = 1; 
+            if (newSize < 3)
+                newSize = 3; 
             CellSize = newSize;
+            if (!Running)
+                RenderWorld();
         }
 
 
@@ -473,10 +495,7 @@ namespace LifeSim.UI.Boards
 
         private void ClearBtn_Click(object sender, RoutedEventArgs e)
         {
-            var start = DateTime.Now;
-            cellCollection.ClearCells();
-            RenderWorld();
-            FrameRenderTime.Content = $"{(int)DateTime.Now.Subtract(start).TotalMilliseconds}ms";
+            ClearCells();
         }
 
         private void SaveBtn_Click(object sender, RoutedEventArgs e)
