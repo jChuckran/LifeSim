@@ -9,6 +9,7 @@ using System;
 using System.IO;
 using System.Windows.Input;
 using Microsoft.Win32;
+using LifeSim.UI.CellGraphics;
 
 namespace LifeSim.UI.Boards
 {
@@ -120,6 +121,12 @@ namespace LifeSim.UI.Boards
 
         #endregion
 
+        public CanvasRendererBase Renderer { get; set; }
+
+        private void InitializeRenderer()
+        {
+            Renderer = new SimpleCanvasRenderer(WorldCanvas);
+        }
 
         public double WorldWidth
         {
@@ -246,40 +253,16 @@ namespace LifeSim.UI.Boards
 
         private void RenderWorld()
         {
-
-            WorldCanvas.Children.Clear();
-
             LeftEdge.Content = LeftRenderEdge.ToString("N0");
             TopEdge.Content = TopRenderEdge.ToString("N0");
             RightEdge.Content = RightRenderEdge.ToString("N0");
             BottomEdge.Content = BottomRenderEdge.ToString("N0");
             Offsets.Content = $"XOffset: {XOffset:N0} YOffset: {YOffset:N0}";
             CellCount.Content = $"Total Cells: {cellCollection.Cells.Count():N0} Living Cells: {cellCollection.Cells.Where((c) => c.IsAlive).Count():N0}";
-            Iteration.Content = $"Iteration: {cellCollection?.Iteration:N0}";
-
-            if (cellCollection == null)
-                return;
-
-            var viewableCells = cellCollection.Cells.Where((c) => (c.X >= LeftRenderEdge / CellSize && c.X <= RightRenderEdge / CellSize) && (c.Y >= TopRenderEdge / CellSize && c.Y <= BottomRenderEdge / CellSize)).ToList();
-
-            foreach (TrackedCell cell in viewableCells)
-            {
-                if (cell.IsAlive)
-                    AddPoint(CellSize, CellSize, (cell.X * CellSize) + CenterX + XOffset, (cell.Y * CellSize) + CenterY + YOffset, Colors.RoyalBlue);
-                //else
-                //    AddPoint(CellSize, CellSize, (cell.X * CellSize) + CenterX + XOffset, (cell.Y * CellSize) + CenterY + YOffset, Colors.LightBlue);
-            }
-
-            WorldCanvas.UpdateLayout();
-        }
-
-        private void AddPoint(double width, double height, double drawX, double drawY, Color color)
-        {
-            var ellipse = new Ellipse() { Width = width, Height = height };
-            ellipse.Fill = new SolidColorBrush(color);
-            Canvas.SetLeft(ellipse, drawX - width / 2);
-            Canvas.SetTop(ellipse, drawY - height / 2);
-            WorldCanvas.Children.Add(ellipse);
+            Iteration.Content = $"Iteration: {cellCollection.Iteration:N0}";
+            if (Renderer == null)
+                InitializeRenderer();
+            Renderer.Render(cellCollection, CellSize, XOffset, YOffset);
         }
 
         private Point GetCellPoint(Point canvasPoint)
