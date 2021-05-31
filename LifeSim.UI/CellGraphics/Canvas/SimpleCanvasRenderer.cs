@@ -58,7 +58,7 @@ namespace LifeSim.UI.CellGraphics
             }
         }
 
-        private bool _showGridLines = false;
+        private bool _showGridLines = true;
         public bool ShowGridLines
         {
             get { return _showGridLines; }

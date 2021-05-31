@@ -25,6 +25,7 @@ namespace LifeSim.UI.Boards
         }
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+            InitializeRenderer();
             Generate();
         }
 
@@ -117,6 +118,84 @@ namespace LifeSim.UI.Boards
         public static void SetRunning(DependencyObject obj, bool value)
         {
             obj.SetValue(RunningProperty, value);
+        }
+
+        #endregion
+
+        #region CellColor Property
+
+        /// <summary>
+        /// Sets the cell color 
+        /// Default Width is Auto
+        /// </summary>
+        public static readonly DependencyProperty CellColorProperty =
+            DependencyProperty.RegisterAttached(
+                "CellColor", typeof(Color), typeof(SimpleBoard),
+                new PropertyMetadata(Colors.RoyalBlue, CellColorChanged));
+
+        public Color CellColor
+        {
+            get { return (Color)GetValue(CellColorProperty); }
+            set { SetValue(CellColorProperty, value); }
+        }
+
+        // Get
+        public static Color GetCellColor(DependencyObject obj)
+        {
+            return (Color)obj.GetValue(CellColorProperty);
+        }
+
+        // Set
+        public static void SetCellColor(DependencyObject obj, Color value)
+        {
+            obj.SetValue(CellColorProperty, value);
+        }
+
+        public static void CellColorChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            if (!(obj is SimpleBoard))
+                return;
+            SimpleBoard board = (SimpleBoard)obj;
+            board.Refresh();
+        }
+
+        #endregion
+
+        #region GridLineColor Property
+
+        /// <summary>
+        /// Sets the cell color 
+        /// Default Width is Auto
+        /// </summary>
+        public static readonly DependencyProperty GridLineColorProperty =
+            DependencyProperty.RegisterAttached(
+                "GridLineColor", typeof(Color), typeof(SimpleBoard),
+                new PropertyMetadata(Colors.Black, GridLineColorChanged));
+
+        public Color GridLineColor
+        {
+            get { return (Color)GetValue(GridLineColorProperty); }
+            set { SetValue(GridLineColorProperty, value); }
+        }
+
+        // Get
+        public static Color GetGridLineColor(DependencyObject obj)
+        {
+            return (Color)obj.GetValue(GridLineColorProperty);
+        }
+
+        // Set
+        public static void SetGridLineColor(DependencyObject obj, Color value)
+        {
+            obj.SetValue(GridLineColorProperty, value);
+        }
+
+        public static void GridLineColorChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            if (!(obj is SimpleBoard))
+                return;
+            SimpleBoard board = (SimpleBoard)obj;
+            board.Refresh();
         }
 
         #endregion
@@ -242,6 +321,8 @@ namespace LifeSim.UI.Boards
 
         public void Refresh()
         {
+            if (Renderer == null)
+                return;
             var start = DateTime.Now;
             RenderWorld();
             FrameRenderTime.Content = $"{(int)DateTime.Now.Subtract(start).TotalMilliseconds}ms";
@@ -249,6 +330,8 @@ namespace LifeSim.UI.Boards
 
         private void RenderWorld()
         {
+            if (Renderer == null)
+                return;
             LeftEdge.Content = LeftRenderEdge.ToString("N0");
             TopEdge.Content = TopRenderEdge.ToString("N0");
             RightEdge.Content = RightRenderEdge.ToString("N0");
@@ -256,8 +339,11 @@ namespace LifeSim.UI.Boards
             Offsets.Content = $"XOffset: {XOffset:N0} YOffset: {YOffset:N0}";
             CellCount.Content = $"Total Cells: {cellCollection.Cells.Count():N0} Living Cells: {cellCollection.Cells.Where((c) => c.IsAlive).Count():N0}";
             Iteration.Content = $"Iteration: {cellCollection.Iteration:N0}";
-            if (Renderer == null)
-                InitializeRenderer();
+            if (Renderer is SimpleCanvasRenderer scr)
+            {
+                scr.AliveCellColor = CellColor;
+                scr.GridLinesColor = GridLineColor;
+            }
             Renderer.Render(cellCollection, CellSize, XOffset, YOffset);
         }
 
