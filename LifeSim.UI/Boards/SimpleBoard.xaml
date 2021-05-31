@@ -10,8 +10,8 @@
              d:DesignHeight="450" d:DesignWidth="1000" Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <Style TargetType="boards:SimpleBoard" BasedOn="{StaticResource {x:Type UserControl}}">
-            <Setter Property="CellColor" Value="{DynamicResource MahApps.Colors.Highlight}"/>
-            <Setter Property="GridLineColor"  Value="{DynamicResource MahApps.Colors.Gray.SemiTransparent}"/>
+            <Setter Property="CellColor" Value="{DynamicResource Primary700}"/>
+            <Setter Property="GridLineColor"  Value="{DynamicResource Secondary500}"/>
         </Style>
         <Style x:Key="RunBtnStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="Content" Value="Run"/>
@@ -32,7 +32,7 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid x:Name="ControlPanel">
@@ -65,9 +65,9 @@
                     <Button x:Name="ClearBtn" Content="Clear" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" Padding="2" Click="ClearBtn_Click"/>
                     <Button x:Name="SaveBtn" Content="Save" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" Padding="2" Click="SaveBtn_Click"/>
                     <Button x:Name="LoadBtn" Content="Load" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" Padding="2" Click="LoadBtn_Click"/>
-                    <Button x:Name="AdvanceBtn" Content="Advance" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" Padding="2" Click="Advance_Click"/>
+                    <Button x:Name="AdvanceBtn" Content="Advance" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" Click="Advance_Click"/>
                     <!--<Button x:Name="AdvanceTenBtn" Content="Advance 10" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" Padding="2" Click="AdvanceTen_Click"/>-->
-                    <Button x:Name="AdvanceHundredBtn" Content="Advance 100" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" Padding="2" Click="AdvanceHundred_Click"/>
+                    <Button x:Name="AdvanceHundredBtn" Content="Advance 100" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" Click="AdvanceHundred_Click"/>
                     <Button x:Name="RunBtn" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" Padding="2" Click="RunBtn_Click" Style="{DynamicResource RunBtnStyle}"/>
                 </UniformGrid>
             </Grid>
