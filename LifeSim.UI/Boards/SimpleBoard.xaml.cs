@@ -397,7 +397,7 @@ namespace LifeSim.UI.Boards
 
         private void Load()
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            OpenFileDialog openFileDialog = new OpenFileDialog() { Filter = "LifeSim files (*.lifesim)|*.lifesim" };
             if (openFileDialog.ShowDialog() == true)
             {
                 Mouse.OverrideCursor = Cursors.Wait;
@@ -406,6 +406,15 @@ namespace LifeSim.UI.Boards
                 Refresh();
                 Mouse.OverrideCursor = null;
             }
+            //OpenFileDialog openFileDialog = new OpenFileDialog() { Filter = "cell files (*.cell)|*.cell" };
+            //if (openFileDialog.ShowDialog() == true)
+            //{
+            //    Mouse.OverrideCursor = Cursors.Wait;
+            //    var cellJson = File.ReadAllText(openFileDialog.FileName);
+            //    cellCollection.Import(cellJson);
+            //    Refresh();
+            //    Mouse.OverrideCursor = null;
+            //}
         }
 
         private void Generate_Click(object sender, RoutedEventArgs e)

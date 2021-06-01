@@ -71,6 +71,36 @@ namespace LifeSim.Engine2D.Models
             return lines.Aggregate((a, b) => a + Environment.NewLine + b); ;
         }
 
+        public void ImportSeed(string seed, char aliveChar = 'O')
+        {
+            lock (cellSync)
+            {
+                Cells.Clear();
+                string[] lines = seed.Split(Environment.NewLine, StringSplitOptions.None);
+                var longestLine = lines.Aggregate((longest, l) => !l.StartsWith("!") && (longest == null || l.Length > longest.Length) ? l : longest);
+                if (longestLine != null && longestLine.Length == 0)
+                {
+                    var xOffset = (int)-Math.Floor((double)longestLine.Length / 2);
+                    long y = xOffset;
+                    foreach (string line in lines)
+                    {
+                        if (line.StartsWith("!"))
+                            continue;
+                        for (int x = 0; x < line.Length; x++)
+                        {
+                            if (line[x] == aliveChar)
+                            {
+                                UpdateCell(x + xOffset, y, true);
+                            }
+                        }
+                        y++;
+                    }
+                }
+                Iteration = 0;
+                Seed = seed;
+            }
+        }
+
         public void ClearCells()
         {
             lock (cellSync)
