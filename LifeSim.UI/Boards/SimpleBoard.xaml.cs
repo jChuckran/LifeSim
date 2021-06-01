@@ -397,24 +397,23 @@ namespace LifeSim.UI.Boards
 
         private void Load()
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog() { Filter = "LifeSim files (*.lifesim)|*.lifesim" };
+            OpenFileDialog openFileDialog = new OpenFileDialog() { Filter = "All LifeSim Types|*.lifesim;*.cells|LifeSim files (*.lifesim)|*.lifesim|Cells files (*.cells)|*.cells" };
             if (openFileDialog.ShowDialog() == true)
             {
                 Mouse.OverrideCursor = Cursors.Wait;
-                var cellJson = File.ReadAllText(openFileDialog.FileName);
-                cellCollection.Import(cellJson);
+                if (openFileDialog.FileName.ToLower().EndsWith(".lifesim"))
+                {
+                    var cellJson = File.ReadAllText(openFileDialog.FileName);
+                    cellCollection.Import(cellJson);
+                }
+                else if (openFileDialog.FileName.ToLower().EndsWith(".cells"))
+                {
+                    var cellString = File.ReadAllText(openFileDialog.FileName);
+                    cellCollection.ImportSeed(cellString);
+                }
                 Refresh();
                 Mouse.OverrideCursor = null;
             }
-            //OpenFileDialog openFileDialog = new OpenFileDialog() { Filter = "Cells files (*.cells)|*.cells" };
-            //if (openFileDialog.ShowDialog() == true)
-            //{
-            //    Mouse.OverrideCursor = Cursors.Wait;
-            //    var cellString = File.ReadAllText(openFileDialog.FileName);
-            //    cellCollection.ImportSeed(cellString);
-            //    Refresh();
-            //    Mouse.OverrideCursor = null;
-            //}
         }
 
         private void Generate_Click(object sender, RoutedEventArgs e)
