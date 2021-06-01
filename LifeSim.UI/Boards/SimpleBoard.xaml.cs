@@ -406,12 +406,12 @@ namespace LifeSim.UI.Boards
                 Refresh();
                 Mouse.OverrideCursor = null;
             }
-            //OpenFileDialog openFileDialog = new OpenFileDialog() { Filter = "cell files (*.cell)|*.cell" };
+            //OpenFileDialog openFileDialog = new OpenFileDialog() { Filter = "Cells files (*.cells)|*.cells" };
             //if (openFileDialog.ShowDialog() == true)
             //{
             //    Mouse.OverrideCursor = Cursors.Wait;
-            //    var cellJson = File.ReadAllText(openFileDialog.FileName);
-            //    cellCollection.Import(cellJson);
+            //    var cellString = File.ReadAllText(openFileDialog.FileName);
+            //    cellCollection.ImportSeed(cellString);
             //    Refresh();
             //    Mouse.OverrideCursor = null;
             //}

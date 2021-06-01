@@ -1,0 +1,188 @@
+{
+  "Cells": [
+    {
+      "IsAlive": true,
+      "X": -13,
+      "Y": -2
+    },
+    {
+      "IsAlive": true,
+      "X": -12,
+      "Y": -2
+    },
+    {
+      "IsAlive": true,
+      "X": -13,
+      "Y": -1
+    },
+    {
+      "IsAlive": true,
+      "X": -12,
+      "Y": -1
+    },
+    {
+      "IsAlive": true,
+      "X": -3,
+      "Y": -2
+    },
+    {
+      "IsAlive": true,
+      "X": -2,
+      "Y": -3
+    },
+    {
+      "IsAlive": true,
+      "X": -3,
+      "Y": -1
+    },
+    {
+      "IsAlive": true,
+      "X": -1,
+      "Y": -4
+    },
+    {
+      "IsAlive": true,
+      "X": -3,
+      "Y": 0
+    },
+    {
+      "IsAlive": true,
+      "X": -2,
+      "Y": 1
+    },
+    {
+      "IsAlive": true,
+      "X": -1,
+      "Y": 2
+    },
+    {
+      "IsAlive": true,
+      "X": 0,
+      "Y": -4
+    },
+    {
+      "IsAlive": true,
+      "X": 2,
+      "Y": -3
+    },
+    {
+      "IsAlive": true,
+      "X": 3,
+      "Y": -2
+    },
+    {
+      "IsAlive": true,
+      "X": 3,
+      "Y": -1
+    },
+    {
+      "IsAlive": true,
+      "X": 4,
+      "Y": -1
+    },
+    {
+      "IsAlive": true,
+      "X": 1,
+      "Y": -1
+    },
+    {
+      "IsAlive": true,
+      "X": 3,
+      "Y": 0
+    },
+    {
+      "IsAlive": true,
+      "X": 2,
+      "Y": 1
+    },
+    {
+      "IsAlive": true,
+      "X": 0,
+      "Y": 2
+    },
+    {
+      "IsAlive": true,
+      "X": 7,
+      "Y": -3
+    },
+    {
+      "IsAlive": true,
+      "X": 7,
+      "Y": -4
+    },
+    {
+      "IsAlive": true,
+      "X": 8,
+      "Y": -4
+    },
+    {
+      "IsAlive": true,
+      "X": 8,
+      "Y": -3
+    },
+    {
+      "IsAlive": true,
+      "X": 7,
+      "Y": -2
+    },
+    {
+      "IsAlive": true,
+      "X": 8,
+      "Y": -2
+    },
+    {
+      "IsAlive": true,
+      "X": 9,
+      "Y": -1
+    },
+    {
+      "IsAlive": true,
+      "X": 9,
+      "Y": -5
+    },
+    {
+      "IsAlive": true,
+      "X": 11,
+      "Y": -1
+    },
+    {
+      "IsAlive": true,
+      "X": 11,
+      "Y": 0
+    },
+    {
+      "IsAlive": true,
+      "X": 11,
+      "Y": -5
+    },
+    {
+      "IsAlive": true,
+      "X": 11,
+      "Y": -6
+    },
+    {
+      "IsAlive": true,
+      "X": 21,
+      "Y": -4
+    },
+    {
+      "IsAlive": true,
+      "X": 22,
+      "Y": -4
+    },
+    {
+      "IsAlive": true,
+      "X": 21,
+      "Y": -3
+    },
+    {
+      "IsAlive": true,
+      "X": 22,
+      "Y": -3
+    }
+  ],
+  "Rules": {
+    "$type": "LifeSim.Engine2D.Rules.ConwaysGameOfLife, LifeSim.Engine2D"
+  },
+  "Iteration": 0
+}

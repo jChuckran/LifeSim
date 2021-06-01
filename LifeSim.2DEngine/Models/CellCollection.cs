@@ -76,12 +76,13 @@ namespace LifeSim.Engine2D.Models
             lock (cellSync)
             {
                 Cells.Clear();
-                string[] lines = seed.Split(Environment.NewLine, StringSplitOptions.None);
+                string[] lines = seed.Replace("\r\n", "\n").Replace("\r", "\n").Split("\n", StringSplitOptions.None);
                 var longestLine = lines.Aggregate((longest, l) => !l.StartsWith("!") && (longest == null || l.Length > longest.Length) ? l : longest);
-                if (longestLine != null && longestLine.Length == 0)
+                if (longestLine != null && longestLine.Length != 0)
                 {
+                    var lineCount = lines.Count((l) => !l.StartsWith("!"));
                     var xOffset = (int)-Math.Floor((double)longestLine.Length / 2);
-                    long y = xOffset;
+                    long y = -(lineCount / 2);
                     foreach (string line in lines)
                     {
                         if (line.StartsWith("!"))
