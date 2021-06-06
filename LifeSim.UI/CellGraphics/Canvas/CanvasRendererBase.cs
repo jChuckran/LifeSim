@@ -78,6 +78,13 @@ namespace LifeSim.UI.CellGraphics
             Surface.Children.Add(line);
         }
 
+        public Point GetCellPoint(Point canvasPoint, double cellSize, double xOffset, double yOffset)
+        {
+            var cx = (canvasPoint.X - xOffset - CenterX) / cellSize;
+            var cy = (canvasPoint.Y - yOffset - CenterY) / cellSize;
+            return new Point(Math.Round(cx), Math.Round(cy));
+        }
+
         public void Initialize(Canvas surface)
         {
             Surface = surface;

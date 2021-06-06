@@ -357,17 +357,10 @@ namespace LifeSim.UI.Boards
             CellCount.Content = $"Total Cells: {cellCollection.Cells.Count():N0} Living Cells: {cellCollection.Cells.Where((c) => c.IsAlive).Count():N0}";
         }
 
-        private Point GetCellPoint(Point canvasPoint)
-        {
-            var cx = Math.Round((canvasPoint.X - XOffset) / CellSize) * CellSize;
-            var cy = Math.Round((canvasPoint.Y - YOffset) / CellSize) * CellSize;
-            return new Point((cx - CenterX) / CellSize , (cy - CenterY) / CellSize);
-        }
-
         private void ToggleCellAtCanvasPoint(Point canvasPoint)
         {
             var start = DateTime.Now;
-            var cellPoint = GetCellPoint(canvasPoint);
+            var cellPoint = Renderer.GetCellPoint(canvasPoint, CellSize, XOffset, YOffset);
             cellCollection.ToggleCell((long)cellPoint.X, (long)cellPoint.Y);
             RenderWorld();
             UpdateInfo();
