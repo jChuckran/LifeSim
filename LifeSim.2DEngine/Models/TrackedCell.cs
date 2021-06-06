@@ -27,7 +27,7 @@ namespace LifeSim.Engine2D.Models
             }
         }
 
-        public int Age { get; set; } = 0;
+        public long Age { get; set; } = 0;
 
         public TrackedCell(CellCollection cellCollection, long x, long y, bool isAlive)
         {
