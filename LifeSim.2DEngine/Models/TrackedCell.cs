@@ -27,6 +27,8 @@ namespace LifeSim.Engine2D.Models
             }
         }
 
+        public int Age { get; set; } = 0;
+
         public TrackedCell(CellCollection cellCollection, long x, long y, bool isAlive)
         {
             _cellCollection = cellCollection;
@@ -47,9 +49,18 @@ namespace LifeSim.Engine2D.Models
 
         public void Advance()
         {
+            var wasAlive = IsAlive;
             IsAlive = IsAliveNext;
             if (IsAlive)
+            {
                 CheckForNewNeighbors();
+                if (wasAlive)
+                    ++Age;
+            }
+            else
+            {
+                Age = 0;
+            }
         }
     }
 }

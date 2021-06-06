@@ -204,7 +204,7 @@ namespace LifeSim.UI.Boards
 
         private void InitializeRenderer()
         {
-            Renderer = new SimpleCanvasRenderer(WorldCanvas);
+            Renderer = new AgeCanvasRenderer(WorldCanvas);
         }
 
         public double WorldWidth
