@@ -149,7 +149,7 @@ namespace LifeSim.UI.CellGraphics
                     //}
                     if (cell.Age == 0)
                     {
-                        AddEllipse(cellSize, cellSize, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, Colors.DeepSkyBlue);
+                        AddEllipse(cellSize, cellSize, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, Colors.LightSkyBlue);
                     }
                     else if (cell.Age == 1)
                     {
@@ -165,7 +165,7 @@ namespace LifeSim.UI.CellGraphics
                     }
                     else if (cell.Age == 4)
                     {
-                        AddEllipse(cellSize, cellSize, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, Colors.Cyan);
+                        AddEllipse(cellSize, cellSize, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, Colors.Blue);
                     }
                     else if (cell.Age == 5)
                     {
