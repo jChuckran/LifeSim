@@ -16,7 +16,7 @@ namespace LifeSim.Engine2D.Models
         private object cellSync = new object();
         public List<TrackedCell> Cells { get; set; } = new List<TrackedCell>();
 
-        public IRules Rules { get; set; } = new ConwaysGameOfLife();
+        public IRules Rules { get; set; } = new UncheckedGrowthGameOfLife();
 
         public long Iteration { get; set; }
 

@@ -14,39 +14,6 @@ namespace LifeSim.UI.CellGraphics
 
         #region Properties
 
-        private Color _aliveCellColor = Colors.RoyalBlue;
-        public Color AliveCellColor
-        {
-            get { return _aliveCellColor; }
-            set
-            {
-                _aliveCellColor = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private Color _deadCellColor = Colors.LightBlue;
-        public Color DeadCellColor
-        {
-            get { return _deadCellColor; }
-            set
-            {
-                _deadCellColor = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private Color _gridLinesColor = Colors.Black;
-        public Color GridLinesColor
-        {
-            get { return _gridLinesColor; }
-            set
-            {
-                _gridLinesColor = value;
-                OnPropertyChanged();
-            }
-        }
-
         private bool _showAllCells = false;
         public bool ShowAllCells
         {
@@ -58,34 +25,10 @@ namespace LifeSim.UI.CellGraphics
             }
         }
 
-        private bool _showGridLines = true;
-        public bool ShowGridLines
-        {
-            get { return _showGridLines; }
-            set
-            {
-                _showGridLines = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private double _gridLineSize = 3;
-        public double GridLineSize
-        {
-            get { return _gridLineSize; }
-            set
-            {
-                _gridLineSize = value;
-                OnPropertyChanged();
-            }
-        }
-
         #endregion
 
-
-        public AgeCanvasRenderer(Canvas surface)
+        public AgeCanvasRenderer(Canvas surface) : base(surface)
         {
-            Initialize(surface);
         }
 
         public override void Render(CellCollection cellCollection, double cellSize, double xOffset, double yOffset)
@@ -96,91 +39,47 @@ namespace LifeSim.UI.CellGraphics
             //Draw Grid Lines
             if (ShowGridLines)
             {
-                var columns = edges.Width / cellSize;
-                var rows = edges.Height / cellSize;
-                var leftMostLine = edges.Left - edges.Left % cellSize;
-                var topMostLine = edges.Top - edges.Top % cellSize;
-                for (double c = 0; c <= columns; c++)
-                {
-                    var l = leftMostLine + (c * cellSize);
-                    var newLine = l + CenterX + xOffset - (cellSize / 2);
-                    AddLine(newLine, 0, newLine, Surface.ActualHeight, 1, GridLinesColor);
-                }
-                for (double r = 0; r <= rows; r++)
-                {
-                    var t = topMostLine + (r * cellSize);
-                    var newLine = t + CenterY + yOffset - (cellSize / 2);
-                    AddLine(0, newLine, Surface.ActualWidth, newLine, 1, GridLinesColor);
-                }
+                RenderGridLines(cellSize, xOffset, yOffset, edges);
             }
             //Draw Cells
+            var size = cellSize * 0.9;
             foreach (TrackedCell cell in viewableCells)
-            {                
+            {            
                 if (cell.IsAlive)
                 {
-                    //AddEllipse(cellSize, cellSize, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, AliveCellColor);
-                    //if (cell.Age == 0)
-                    //{
-                    //    AddEllipse(cellSize, cellSize, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, Colors.LightSkyBlue);
-                    //}
-                    //else if (cell.Age == 1)
-                    //{
-                    //    AddEllipse(cellSize, cellSize, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, Colors.LightGreen);
-                    //}
-                    //else if (cell.Age == 2)
-                    //{
-                    //    AddEllipse(cellSize, cellSize, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, Colors.DeepPink);
-                    //}
-                    //else if (cell.Age == 3)
-                    //{
-                    //    AddEllipse(cellSize, cellSize, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, Colors.Red);
-                    //}
-                    //else if (cell.Age == 4)
-                    //{
-                    //    AddEllipse(cellSize, cellSize, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, Colors.BlueViolet);
-                    //}
-                    //else if (cell.Age == 5)
-                    //{
-                    //    AddEllipse(cellSize, cellSize, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, Colors.Aqua);
-                    //}
-                    //else if (cell.Age >= 6)
-                    //{
-                    //    AddEllipse(cellSize, cellSize, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, Colors.Gold);
-                    //}
                     if (cell.Age == 0)
                     {
-                        AddEllipse(cellSize, cellSize, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, Colors.LightSkyBlue);
+                        AddEllipse(size, size, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, Colors.LightSkyBlue);
                     }
                     else if (cell.Age == 1)
                     {
-                        AddEllipse(cellSize, cellSize, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, Colors.Chartreuse);
+                        AddEllipse(size, size, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, Colors.Chartreuse);
                     }
                     else if (cell.Age == 2)
                     {
-                        AddEllipse(cellSize, cellSize, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, Colors.BlueViolet);
+                        AddEllipse(size, size, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, Colors.BlueViolet);
                     }
                     else if (cell.Age == 3)
                     {
-                        AddEllipse(cellSize, cellSize, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, Colors.Orange);
+                        AddEllipse(size, size, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, Colors.Red);
                     }
                     else if (cell.Age == 4)
                     {
-                        AddEllipse(cellSize, cellSize, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, Colors.Blue);
+                        AddEllipse(size, size, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, Colors.Blue);
                     }
                     else if (cell.Age == 5)
                     {
-                        AddEllipse(cellSize, cellSize, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, Colors.Red);
+                        AddEllipse(size, size, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, Colors.Coral);
                     }
                     else if (cell.Age >= 6)
                     {
-                        AddEllipse(cellSize, cellSize, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, Colors.Gold);
+                        AddEllipse(size, size, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, Colors.Gold);
                     }
                 }
                 else if (ShowAllCells)
-                    AddEllipse(cellSize, cellSize, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, DeadCellColor);
+                    AddEllipse(size, size, (cell.X * cellSize) + CenterX + xOffset, (cell.Y * cellSize) + CenterY + yOffset, Colors.Black);
             }
         }
-
 
     }
 }

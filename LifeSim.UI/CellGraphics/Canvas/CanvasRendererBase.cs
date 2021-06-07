@@ -17,6 +17,7 @@ namespace LifeSim.UI.CellGraphics
 
         public Canvas Surface;
 
+        #region Properties
         public double SurfaceWidth
         {
             get
@@ -43,6 +44,63 @@ namespace LifeSim.UI.CellGraphics
             get
             {
                 return Surface.ActualHeight / 2;
+            }
+        }
+        private Color _gridLinesColor = Colors.Black;
+        public Color GridLinesColor
+        {
+            get { return _gridLinesColor; }
+            set
+            {
+                _gridLinesColor = value;
+                OnPropertyChanged();
+            }
+        }
+        private bool _showGridLines = true;
+        public bool ShowGridLines
+        {
+            get { return _showGridLines; }
+            set
+            {
+                _showGridLines = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private double _gridLineSize = 3;
+        public double GridLineSize
+        {
+            get { return _gridLineSize; }
+            set
+            {
+                _gridLineSize = value;
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion
+        public CanvasRendererBase(Canvas surface)
+        {
+            Initialize(surface);
+        }
+
+        protected void RenderGridLines(double cellSize, double xOffset, double yOffset, Rect edges)
+        {
+            var columns = edges.Width / cellSize;
+            var rows = edges.Height / cellSize;
+            var leftMostLine = edges.Left - edges.Left % cellSize;
+            var topMostLine = edges.Top - edges.Top % cellSize;
+            for (double c = 0; c <= columns; c++)
+            {
+                var l = leftMostLine + (c * cellSize);
+                var newLine = l + CenterX + xOffset - (cellSize / 2);
+                AddLine(newLine, 0, newLine, Surface.ActualHeight, 1, GridLinesColor);
+            }
+            for (double r = 0; r <= rows; r++)
+            {
+                var t = topMostLine + (r * cellSize);
+                var newLine = t + CenterY + yOffset - (cellSize / 2);
+                AddLine(0, newLine, Surface.ActualWidth, newLine, 1, GridLinesColor);
             }
         }
 
