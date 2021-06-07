@@ -16,7 +16,7 @@ namespace LifeSim.Engine2D.Models
         private object cellSync = new object();
         public List<TrackedCell> Cells { get; set; } = new List<TrackedCell>();
 
-        public IRules Rules { get; set; } = new UncheckedGrowthGameOfLife();
+        public IRules Rules { get; set; } = new EvenGrowthGameOfLife();
 
         public long Iteration { get; set; }
 
@@ -119,10 +119,12 @@ namespace LifeSim.Engine2D.Models
                 lock (cellSync)
                 {
                     var allCells = Cells.ToList();
+                    var nextStateTasks = new List<Func<Task>>();
                     foreach (TrackedCell cell in allCells)
                     {
-                        cell.DetermineNextState(Rules);
+                        nextStateTasks.Add(() => Task.Factory.StartNew(() => cell.DetermineNextState(Rules)));
                     }
+                    Task.WhenAll(nextStateTasks.AsParallel().Select(async task => await task()));
                     foreach (TrackedCell cell in allCells)
                     {
                         cell.Advance();

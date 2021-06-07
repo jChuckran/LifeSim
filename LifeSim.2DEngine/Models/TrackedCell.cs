@@ -53,7 +53,8 @@ namespace LifeSim.Engine2D.Models
             IsAlive = IsAliveNext;
             if (IsAlive)
             {
-                CheckForNewNeighbors();
+                if (!wasAlive)
+                    CheckForNewNeighbors();
                 if (wasAlive)
                     ++Age;
             }

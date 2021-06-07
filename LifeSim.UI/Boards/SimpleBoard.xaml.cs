@@ -38,7 +38,7 @@ namespace LifeSim.UI.Boards
         public static readonly DependencyProperty CellSizeProperty =
             DependencyProperty.RegisterAttached(
                 "CellSize", typeof(int), typeof(SimpleBoard),
-                new PropertyMetadata(25));
+                new PropertyMetadata(50));
 
         public int CellSize
         {
